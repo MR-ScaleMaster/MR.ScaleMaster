@@ -3,61 +3,1573 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Page</title>
+  <title>MR.ScaleMaster: Scale-Consistent Collaborative Mapping</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
+    /* ───────────────── RESET & BASE ───────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-      line-height: 1.6;
-      color: #222;
+      font-family: 'Nunito Sans', system-ui, sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      overflow-x: hidden;
     }
-    h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
-    .venue { color: #555; font-size: 1rem; margin-bottom: 1.5rem; }
-    .hero { margin: 1.5rem 0; }
-    .hero img { width: 100%; border-radius: 6px; }
-    .section { margin: 2rem 0; }
-    .section h2 { font-size: 1.1rem; margin-bottom: 0.75rem; border-bottom: 1px solid #ddd; padding-bottom: 0.25rem; }
-    .links a { margin-right: 1rem; }
-    ul { padding-left: 1.25rem; }
-    p { margin: 0.5rem 0; }
+
+    /* ───────────────── CSS VARS ───────────────── */
+    :root {
+      --bg-dark: #060c1a;
+      --bg-dark2: #0d1528;
+      --accent: #f59e0b;
+      --accent-glow: rgba(245,158,11,0.35);
+      --green:  #4ade80;
+      --yellow: #facc15;
+      --blue:   #60a5fa;
+      --purple: #c084fc;
+      --text-light: #e2e8f0;
+      --text-muted: #94a3b8;
+      --container: 960px;
+      --section-pad: 5rem 1.5rem;
+    }
+
+    /* ───────────────── TOP NAV ───────────────── */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      padding: 0.9rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+    }
+    .top-nav.scrolled {
+      background: rgba(6,12,26,0.92);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .nav-brand {
+      font-size: 1.05rem; font-weight: 800; color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.8rem; }
+    .nav-links a {
+      color: var(--text-muted); font-size: 0.88rem; font-weight: 600;
+      text-decoration: none; letter-spacing: 0.02em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* ───────────────── HERO ───────────────── */
+    .hero {
+      position: relative; width: 100%; height: 100vh;
+      min-height: 600px; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-dark);
+    }
+    #heroBg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      object-fit: cover;
+      object-position: center center;
+      background: var(--bg-dark);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(
+        to bottom,
+        rgba(6,12,26,0.45) 0%,
+        rgba(6,12,26,0.30) 40%,
+        rgba(6,12,26,0.80) 100%
+      );
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 2rem 1.5rem;
+      max-width: 860px;
+    }
+    .venue-pill {
+      display: inline-block;
+      background: rgba(245,158,11,0.18);
+      border: 1px solid rgba(245,158,11,0.5);
+      color: var(--accent);
+      font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.35rem 1rem; border-radius: 99px;
+      margin-bottom: 1.4rem;
+    }
+    .hero-title {
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 900; color: #fff;
+      line-height: 1.08; letter-spacing: -0.03em;
+      text-shadow: 0 2px 30px rgba(0,0,0,0.7);
+      margin-bottom: 0.9rem;
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-subtitle {
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+      font-weight: 300; color: var(--text-light);
+      line-height: 1.5; letter-spacing: 0.005em;
+      text-shadow: 0 1px 10px rgba(0,0,0,0.6);
+      margin-bottom: 0.8rem;
+    }
+    .hero-authors {
+      font-size: 0.95rem; color: var(--text-muted);
+      font-style: italic; margin-bottom: 2rem;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    }
+    .hero-buttons { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px; font-size: 0.92rem; font-weight: 700;
+      text-decoration: none; transition: all 0.22s; letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--accent); color: #0a0e1a;
+      box-shadow: 0 0 0 0 var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: #fbbf24; transform: translateY(-2px);
+      box-shadow: 0 6px 24px var(--accent-glow);
+    }
+    .btn-outline {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    /* agent legend */
+    .agent-legend {
+      position: absolute; bottom: 5rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; gap: 1.4rem; flex-wrap: wrap; justify-content: center;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    /* scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--text-muted); font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; animation: fadeUpDown 2s ease-in-out infinite;
+    }
+    .scroll-chevron {
+      width: 18px; height: 18px;
+      border-right: 2px solid var(--text-muted);
+      border-bottom: 2px solid var(--text-muted);
+      transform: rotate(45deg);
+    }
+    @keyframes fadeUpDown {
+      0%,100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(5px); }
+    }
+
+    /* ───────────────── TEASER ───────────────── */
+    .teaser-section {
+      background: var(--bg-dark2);
+      padding: 3.5rem 1.5rem;
+    }
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+    .fig-placeholder {
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.9rem;
+      font-style: italic; min-height: 260px;
+    }
+    .fig-caption {
+      margin-top: 1rem; font-size: 0.88rem;
+      color: var(--text-muted); line-height: 1.6; text-align: center;
+    }
+    .fig-caption strong { color: var(--text-light); }
+
+    /* ───────────────── ABSTRACT ───────────────── */
+    .section-light {
+      padding: var(--section-pad);
+      background: #fff;
+    }
+    .section-dark {
+      padding: var(--section-pad);
+      background: var(--bg-dark2);
+    }
+    .section-title {
+      font-size: 1.7rem; font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 1.8rem;
+      text-align: center;
+    }
+    .section-title.light { color: #fff; }
+    .section-title::after {
+      content: ''; display: block;
+      width: 40px; height: 3px;
+      background: var(--accent); border-radius: 2px;
+      margin: 0.6rem auto 0;
+    }
+    .abstract-text {
+      font-size: 1.02rem; line-height: 1.85;
+      color: #374151; max-width: 820px; margin: 0 auto;
+    }
+    .abstract-text em { font-style: normal; font-weight: 700; color: #1a1a2e; }
+    .abstract-text mark {
+      background: rgba(245,158,11,0.15);
+      color: #92400e; border-radius: 3px; padding: 0 2px;
+    }
+
+    /* ───────────────── CHALLENGE CARDS ───────────────── */
+    .challenge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4rem;
+    }
+    .challenge-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 1.8rem 1.5rem;
+      transition: transform 0.25s, border-color 0.25s, background 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .challenge-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 14px 14px 0 0;
+    }
+    .challenge-card:nth-child(1)::before { background: #f87171; }
+    .challenge-card:nth-child(2)::before { background: var(--accent); }
+    .challenge-card:nth-child(3)::before { background: #818cf8; }
+    .challenge-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.07);
+    }
+    .card-icon {
+      font-size: 2.2rem; margin-bottom: 1rem;
+    }
+    .card-label {
+      font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 0.4rem;
+    }
+    .card-title {
+      font-size: 1.05rem; font-weight: 800;
+      color: #fff; margin-bottom: 0.7rem;
+    }
+    .card-body {
+      font-size: 0.88rem; color: var(--text-muted); line-height: 1.7;
+    }
+    .card-solution {
+      margin-top: 1rem; padding-top: 0.9rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.82rem; font-weight: 700;
+      color: var(--accent); letter-spacing: 0.02em;
+    }
+
+    /* ───────────────── METHOD ───────────────── */
+    .method-figure {
+      margin: 2.2rem 0 1.2rem;
+    }
+    .method-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .method-step {
+      text-align: center;
+    }
+    .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); color: #0a0e1a;
+      font-size: 0.9rem; font-weight: 900; margin-bottom: 0.8rem;
+    }
+    .step-title {
+      font-size: 0.95rem; font-weight: 800; margin-bottom: 0.5rem; color: #1a1a2e;
+    }
+    .step-body {
+      font-size: 0.86rem; color: #64748b; line-height: 1.65;
+    }
+
+    /* ───────────────── RESULTS ───────────────── */
+    .results-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      margin-top: 2rem;
+    }
+    .result-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 1.6rem;
+    }
+    .result-card-title {
+      font-size: 0.95rem; font-weight: 800; color: #fff;
+      margin-bottom: 0.4rem;
+    }
+    .result-card-sub {
+      font-size: 0.78rem; color: var(--text-muted);
+      margin-bottom: 1.2rem; line-height: 1.5;
+    }
+
+    /* stat highlights */
+    .stat-row {
+      display: flex; gap: 1.5rem; margin-bottom: 1.4rem; flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; flex: 1; min-width: 90px; }
+    .stat-value {
+      font-size: 2rem; font-weight: 900; color: var(--accent);
+      line-height: 1; letter-spacing: -0.03em;
+    }
+    .stat-label {
+      font-size: 0.72rem; color: var(--text-muted);
+      margin-top: 0.3rem; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+
+    /* mini table */
+    .mini-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+    .mini-table th {
+      color: var(--text-muted); font-size: 0.72rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.4rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+    }
+    .mini-table td {
+      padding: 0.45rem 0.6rem; color: var(--text-light);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .mini-table tr:last-child td { border-bottom: none; }
+    .mini-table .best { color: var(--accent); font-weight: 800; }
+    .mini-table .bad  { color: #f87171; }
+    .mini-table .row-highlight td { background: rgba(245,158,11,0.06); }
+
+    /* ───────────────── QUALITATIVE GALLERY ───────────────── */
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;
+      margin-top: 2rem;
+    }
+    .gallery-item {
+      border-radius: 10px; overflow: hidden;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .gallery-item:hover {
+      transform: scale(1.02);
+      border-color: rgba(255,255,255,0.2);
+    }
+    .gallery-item img {
+      width: 100%; display: block; object-fit: cover;
+    }
+    .gallery-caption {
+      padding: 0.7rem 0.9rem;
+      font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;
+    }
+    .gallery-caption strong { color: var(--text-light); }
+
+    /* ───────────────── FRONTEND COMPARISON ───────────────── */
+    .frontend-table-wrap { overflow-x: auto; margin-top: 1.8rem; }
+    .frontend-table {
+      width: 100%; border-collapse: collapse; font-size: 0.9rem;
+    }
+    .frontend-table th {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted); font-size: 0.75rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.75rem 1rem; text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .frontend-table td {
+      padding: 0.7rem 1rem; color: var(--text-light);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .frontend-table .tag {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      padding: 0.2rem 0.6rem; border-radius: 5px;
+    }
+    .tag-mast3r { background: rgba(96,165,250,0.2); color: #93c5fd; }
+    .tag-vggt   { background: rgba(192,132,252,0.2); color: #d8b4fe; }
+    .tag-pi3    { background: rgba(74,222,128,0.2); color: #86efac; }
+    .tag-mixed  { background: rgba(245,158,11,0.2); color: #fcd34d; }
+    .frontend-table .ate-best { color: var(--accent); font-weight: 800; }
+
+    /* ───────────────── BIBTEX ───────────────── */
+    .bibtex-wrap { position: relative; }
+    .bibtex-block {
+      background: #0d1117; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 1.4rem 1.4rem 1.4rem 1.4rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.88rem; color: #c9d1d9; line-height: 1.75;
+      overflow-x: auto; white-space: pre;
+    }
+    .copy-btn {
+      position: absolute; top: 0.7rem; right: 0.7rem;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      color: var(--text-muted); font-size: 0.78rem; font-weight: 700;
+      padding: 0.35rem 0.8rem; border-radius: 6px; cursor: pointer;
+      transition: all 0.2s; font-family: 'Nunito Sans', sans-serif;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+
+    /* ───────────────── FOOTER ───────────────── */
+    .footer {
+      background: var(--bg-dark);
+      padding: 2rem 1.5rem;
+      text-align: center; color: var(--text-muted);
+      font-size: 0.82rem; border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer a { color: var(--text-muted); text-decoration: underline; }
+
+    /* ───────────────── FADE-IN ANIMATION ───────────────── */
+    .fade-in {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ───────────────── WIDE CONTAINER (video section) ───────────────── */
+    .container-wide {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ───────────────── VIDEO COMPARISON ───────────────── */
+    .seq-tabs {
+      display: flex; gap: 0.55rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .seq-tab {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-size: 0.82rem; font-weight: 700;
+      padding: 0.5rem 1.3rem; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.05em; font-family: inherit;
+    }
+    .seq-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .seq-tab.active {
+      background: var(--accent); color: #0a0e1a;
+      border-color: var(--accent);
+    }
+    .video-panel { display: none; }
+    .video-panel.active { display: block; }
+
+    .video-panel-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    /* 5th card (Hetero): centered at half width */
+    .vc-last {
+      grid-column: 1 / -1;
+      max-width: calc(50% - 0.5rem);
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .video-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; overflow: hidden;
+      transition: transform 0.22s, border-color 0.22s;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .video-card video {
+      width: 100%; display: block;
+      aspect-ratio: 16/9; background: #000;
+      object-fit: cover;
+    }
+    .video-card-label {
+      padding: 0.55rem 0.85rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    /* LoGeR tag */
+    .tag-loger { background: rgba(251,146,60,0.2); color: #fdba74; }
+    /* video placeholder shown when src missing */
+    .video-placeholder {
+      width: 100%; aspect-ratio: 16/9;
+      background: rgba(255,255,255,0.03);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); font-size: 0.78rem; font-style: italic;
+    }
+
+    /* ───────────────── TRAJECTORY SLIDER ───────────────── */
+    .traj-tabs {
+      display: flex; gap: 0.55rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .traj-tab {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-size: 0.82rem; font-weight: 700;
+      padding: 0.5rem 1.3rem; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+      letter-spacing: 0.05em; font-family: inherit;
+    }
+    .traj-tab:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .traj-tab.active { background: var(--accent); color: #0a0e1a; border-color: var(--accent); }
+
+    .traj-panel { display: none; }
+    .traj-panel.active { display: block; }
+
+    .cs-wrap {
+      position: relative; overflow: hidden;
+      border-radius: 14px;
+      cursor: col-resize; user-select: none;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    /* left: normal flow → sets container height */
+    .cs-left {
+      display: block; width: 100%;
+    }
+    .cs-left img {
+      width: 100%; height: auto; display: block;
+      pointer-events: none;
+    }
+    /* right: absolute overlay on top of left */
+    .cs-right {
+      position: absolute; inset: 0;
+      clip-path: inset(0 0 0 50%);
+    }
+    .cs-right img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      pointer-events: none;
+    }
+
+    /* ───────────────── REAL WORLD EXPERIMENT ───────────────── */
+    .rw-inputs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.9rem;
+    }
+    .rw-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; overflow: hidden;
+    }
+    .rw-card video {
+      width: 100%; display: block;
+      aspect-ratio: 16/9; object-fit: cover;
+      background: #000;
+    }
+    .rw-card-label {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--text-muted); letter-spacing: 0.03em;
+      text-align: center;
+    }
+    /* arrow row */
+    .rw-arrow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; margin: 1.6rem 0;
+    }
+    .rw-arrow-line {
+      flex: 1; height: 2px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .rw-arrow-label {
+      display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+    }
+    .rw-arrow-label span {
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .rw-arrow-chevron {
+      font-size: 1.8rem; color: var(--accent); line-height: 1;
+    }
+    /* output video */
+    .rw-output {
+      border-radius: 14px; overflow: hidden;
+      border: 2px solid rgba(245,158,11,0.5);
+      box-shadow: 0 0 32px rgba(245,158,11,0.15);
+      position: relative;
+    }
+    .rw-output video {
+      width: 100%; display: block;
+      aspect-ratio: 16/9; object-fit: cover;
+      background: #000;
+    }
+    .rw-output-badge {
+      position: absolute; top: 0.8rem; left: 0.8rem;
+      background: var(--accent); color: #0a0e1a;
+      font-size: 0.75rem; font-weight: 800;
+      padding: 0.3rem 0.8rem; border-radius: 6px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .rw-exp-title {
+      font-size: 1rem; font-weight: 800;
+      color: #1a1a2e; letter-spacing: 0.02em;
+      margin-bottom: 1.4rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .rw-exp-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: rgba(0,0,0,0.1);
+    }
+    .rw-divider {
+      border: none;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+      margin: 3rem 0;
+    }
+    @media (max-width: 768px) {
+      .rw-inputs { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* labels */
+    .cs-label {
+      position: absolute; bottom: 0.8rem;
+      font-size: 0.78rem; font-weight: 800;
+      padding: 0.3rem 0.75rem; border-radius: 6px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      pointer-events: none;
+    }
+    .cs-label-left  { left: 0.8rem;  background: rgba(96,165,250,0.85);  color: #fff; }
+    .cs-label-right { right: 0.8rem; background: rgba(74,222,128,0.85); color: #0a0e1a; }
+
+    /* divider line + handle */
+    .cs-divider {
+      position: absolute; top: 0; bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 3px; background: #fff;
+      pointer-events: none;
+    }
+    .cs-handle {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #fff; color: #1a1a2e;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; font-weight: 900; box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    /* ───────────────── RESPONSIVE ───────────────── */
+    @media (max-width: 768px) {
+      .hero { height: auto; min-height: 100svh; padding: 6rem 1rem 4rem;}
+      .challenge-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+      .method-steps { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .agent-legend { gap: 0.8rem; }
+      .container-wide { padding: 0 1rem; }
+      .video-panel-grid { grid-template-columns: 1fr; }
+      .vc-last { max-width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <h1>[Paper Title]</h1>
-  <p class="venue">IROS 2026</p>
 
-  <div class="hero">
-    <!-- TODO: add paper/teaser figure -->
-    <p><em>[Teaser figure placeholder]</em></p>
+<!-- ══════════ NAV ══════════ -->
+<nav class="top-nav" id="topNav">
+  <div class="nav-brand">MR.<span>ScaleMaster</span></div>
+  <div class="nav-links">
+    <a href="#abstract">Abstract</a>
+    <a href="#challenges">Challenges</a>
+    <a href="#method">Method</a>
+    <a href="#results">Results</a>
+    <a href="#realworld">Real World</a>
+    <a href="#videos">Videos</a>
+    <a href="#trajectory">Trajectory</a>
+    <a href="#bibtex">BibTeX</a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="hero">
+  <video id="heroBg" src="1.mp4"
+    autoplay loop muted playsinline disablepictureinpicture
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <!-- <div class="venue-pill">IROS 2026</div> -->
+    <h1 class="hero-title">MR.<span class="accent">ScaleMaster</span></h1>
+    <p class="hero-subtitle">
+      Scale-Consistent Collaborative Mapping<br>from Crowd-Sourced Monocular Videos
+    </p>
+    <p class="hero-authors">Anonymous Authors</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn btn-primary">📄 Paper</a>
+      <a href="#" class="btn btn-outline">💻 Code</a>
+      <a href="#" class="btn btn-outline">🎥 Video</a>
+    </div>
   </div>
 
-  <div class="section">
-    <h2>Abstract</h2>
-    <p>
-      [Abstract will go here.]
+  <!-- agent legend -->
+  <div class="agent-legend">
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--green);color:var(--green);"></div>
+      Legged Robot
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--yellow);color:var(--yellow);"></div>
+      Wheeled Robot
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--blue);color:var(--blue);"></div>
+      Handheld Video 1
+    </div>
+    <div class="legend-item">
+      <div class="legend-dot" style="background:var(--purple);color:var(--purple);"></div>
+      Handheld Video 2
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-chevron"></div>
+  </div>
+</section>
+
+<!-- ══════════ TEASER ══════════ -->
+<section class="teaser-section">
+  <div class="container">
+    <img src="imgs/fig_hero_shot-1.png" alt="Teaser" style="width:100%; border-radius:12px; display:block;">
+    <p class="fig-caption">
+      <strong>Fig. 1.</strong> Real-world heterogeneous multi-robot mapping with MR.ScaleMaster in a multi-floor indoor environment.
+      Four agents — a legged robot <span style="color:var(--green)">●</span>,
+      a wheeled robot <span style="color:var(--yellow)">●</span>,
+      and two handheld cameras <span style="color:var(--blue)">●</span><span style="color:var(--purple)">●</span>
+      — collaboratively build a unified dense 3D map. Inset pairs show inter-agent loop closures across different platforms.
     </p>
   </div>
+</section>
 
-  <div class="section">
-    <h2>Links</h2>
-    <p class="links">
-      <a href="#">Paper (PDF)</a>
-      <a href="#">Code</a>
-      <a href="#">Video</a>
+<!-- ══════════ ABSTRACT ══════════ -->
+<section class="section-light" id="abstract">
+  <div class="container">
+    <h2 class="section-title fade-in">Abstract</h2>
+    <p class="abstract-text fade-in">
+      Crowd-sourced cooperative mapping from monocular cameras promises scalable 3D reconstruction without specialized sensors,
+      yet remains hindered by two scale-specific failure modes:
+      <em>abrupt scale collapse</em> from false-positive loop closures in repetitive environments,
+      and <em>gradual scale drift</em> over long trajectories and per-robot scale ambiguity that prevent direct multi-session fusion.
+      We present <em>MR.ScaleMaster</em>, a cooperative mapping system that addresses both failure modes through three key mechanisms.
+      A <em>Scale Collapse Alarm</em> rejects spurious loop closures before they corrupt the pose graph.
+      A <em>Sim(3) anchor node formulation</em> generalizes the classical SE(3) framework to explicitly estimate per-session scale,
+      resolving per-robot scale ambiguity and enforcing global scale consistency.
+      A <em>modular, open-source, plug-and-play interface</em> enables any monocular reconstruction model to integrate without backend modification.
+      On KITTI sequences with up to 15 agents, the Sim(3) formulation achieves a
+      <mark>7.2× ATE reduction</mark> over the SE(3) baseline,
+      and the alarm rejects <mark>all false-positive loops</mark> while preserving every valid constraint.
+      We further demonstrate heterogeneous multi-robot dense mapping fusing
+      MASt3R-SLAM, π³, and VGGT-SLAM 2.0 within a single unified map.
     </p>
   </div>
+</section>
 
-  <div class="section">
-    <h2>Citation</h2>
-    <pre style="background:#f5f5f5; padding:1rem; overflow:auto; font-size:0.9rem;">@inproceedings{anonymous2026iros,
-  title     = {},
-  author    = {},
-  booktitle = {IROS},
+<!-- ══════════ CHALLENGES ══════════ -->
+<section class="section-dark" id="challenges">
+  <div class="container">
+    <h2 class="section-title light fade-in">What Stops Monocular Collaborative Mapping?</h2>
+    <div class="challenge-grid">
+
+      <div class="challenge-card fade-in">
+        <div class="card-icon">⚡</div>
+        <div class="card-label">Challenge 1</div>
+        <div class="card-title">Abrupt Scale Collapse</div>
+        <div class="card-body">
+          False-positive loop closures in repetitive environments (e.g., corridors) force the
+          optimizer to satisfy conflicting constraints by collapsing scale toward zero — or
+          exploding it to infinity. A single erroneous factor poisons the entire pose graph.
+        </div>
+        <div class="card-solution">→ Scale Collapse Alarm</div>
+      </div>
+
+      <div class="challenge-card fade-in">
+        <div class="card-icon">📏</div>
+        <div class="card-label">Challenge 2</div>
+        <div class="card-title">Gradual Drift &amp; Inter-Session Scale Mismatch</div>
+        <div class="card-body">
+          Scale estimation error accumulates over long trajectories. In multi-robot settings,
+          each agent carries its own unknown scale factor, making direct fusion infeasible
+          without explicit scale alignment across sessions.
+        </div>
+        <div class="card-solution">→ Sim(3) Anchor Node Optimization</div>
+      </div>
+
+      <div class="challenge-card fade-in">
+        <div class="card-icon">🔌</div>
+        <div class="card-label">Challenge 3</div>
+        <div class="card-title">Heterogeneous Front-End Integration</div>
+        <div class="card-body">
+          The rapidly growing ecosystem of 3D vision foundation models (MASt3R-SLAM, π³, VGGT-SLAM 2.0)
+          each have different scale conventions, making plug-and-play multi-robot deployment difficult
+          without a unified backend.
+        </div>
+        <div class="card-solution">→ Front-End-Agnostic Modular Architecture</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ METHOD ══════════ -->
+<section class="section-light" id="method">
+  <div class="container">
+    <h2 class="section-title fade-in">System Overview</h2>
+
+    <div class="method-figure fade-in">
+      <img src="imgs/fig_system_overview-1.png" alt="System pipeline" style="width:100%; border-radius:12px; display:block;">
+      <p class="fig-caption" style="color:#64748b;">
+        <strong>Fig. 2.</strong> System overview of MR.ScaleMaster. (1) Front-end-agnostic multi-robot partitioning bounds gradual scale drift
+        by distributing a long trajectory across short per-agent sessions. (2) The Scale Collapse Alarm monitors per-session scale evolution and
+        rejects false-positive loop closures before they enter the pose graph. (3) Global Sim(3) anchor node optimization resolves inter-session
+        scale discrepancies, producing a unified dense map.
+      </p>
+    </div>
+
+    <div class="method-steps">
+      <div class="method-step fade-in">
+        <div class="step-num">1</div>
+        <div class="step-title">Front-End-Agnostic Partitioning</div>
+        <div class="step-body">
+          Each agent runs any monocular front-end (MASt3R-SLAM, π³, VGGT-SLAM 2.0)
+          and transmits keyframe packets (I<sub>k</sub>, T<sub>k</sub>, P<sub>k</sub>).
+          Shorter per-session trajectories bound drift accumulation.
+        </div>
+      </div>
+      <div class="method-step fade-in">
+        <div class="step-num">2</div>
+        <div class="step-title">Scale Collapse Alarm</div>
+        <div class="step-body">
+          A two-criterion alarm — accumulated rotation check and adaptive scale-jump detection —
+          gates degenerate loop factors before they enter the pose graph, with transactional rollback on detection.
+        </div>
+      </div>
+      <div class="method-step fade-in">
+        <div class="step-num">3</div>
+        <div class="step-title">Global Sim(3) Anchor Optimization</div>
+        <div class="step-body">
+          Sim(3) anchor nodes map each session's local frame into a shared global frame.
+          Per-session scale is an explicit degree of freedom, resolved jointly across all
+          inter-session loop constraints via g2o with analytic Jacobians.
+        </div>
+      </div>
+    </div>
+
+    <!-- Sim(3) anchor node visualization -->
+    <div style="margin-top:2.8rem;" class="fade-in">
+      <p style="text-align:center; font-size:0.82rem; font-weight:700; color:#64748b; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1rem;">
+        Sim(3) Anchor Node Optimization — Visualization
+      </p>
+      <video src="src/videos/anchor_node_viz.mp4"
+        autoplay loop muted playsinline
+        style="width:100%; display:block; border-radius:14px; border:1px solid rgba(0,0,0,0.08);">
+      </video>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ RESULTS ══════════ -->
+<section class="section-dark" id="results">
+  <div class="container">
+    <h2 class="section-title light fade-in">Results</h2>
+
+    <div class="results-grid">
+
+      <!-- Scale Collapse Alarm -->
+      <div class="result-card fade-in">
+        <div class="result-card-title">Scale Collapse Alarm</div>
+        <div class="result-card-sub">Indoor corridor (ARKit pseudo-GT) · MASt3R-SLAM front-end</div>
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="stat-value">0.69 m</div>
+            <div class="stat-label">ATE (Alarm ON)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" style="color:#f87171;">17.08 m</div>
+            <div class="stat-label">ATE (Alarm OFF)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">7/7</div>
+            <div class="stat-label">FP Loops Rejected</div>
+          </div>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr><th>Metric</th><th>Alarm OFF</th><th>Alarm ON</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ATE RMSE [m]</td>
+              <td class="bad">17.08</td>
+              <td class="best">0.69</td>
+            </tr>
+            <tr>
+              <td>Final scale</td>
+              <td class="bad">0.014</td>
+              <td class="best">1.019</td>
+            </tr>
+            <tr>
+              <td>FP loops rejected</td>
+              <td>0</td>
+              <td class="best">7</td>
+            </tr>
+            <tr>
+              <td>True loops accepted</td>
+              <td>—</td>
+              <td class="best">3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Backend ablation -->
+      <div class="result-card fade-in">
+        <div class="result-card-title">Scale-Aware Backend</div>
+        <div class="result-card-sub">KITTI 00 · 15 robots · ATE RMSE [m]</div>
+        <div class="stat-row">
+          <div class="stat-item">
+            <div class="stat-value">7.2×</div>
+            <div class="stat-label">ATE reduction vs SE(3)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">12.3 m</div>
+            <div class="stat-label">Sim(3) full opt.</div>
+          </div>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr><th>Configuration</th><th>ATE [m]</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SE(3) backend</td><td class="bad">88.46</td></tr>
+            <tr><td>Sim(3) anchor-only</td><td>22.50</td></tr>
+            <tr class="row-highlight"><td><strong>Sim(3) full (ours)</strong></td><td class="best">12.26</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /results-grid -->
+
+    <!-- Multi-robot scalability -->
+    <div style="margin-top:2.4rem;" class="fade-in">
+      <div class="result-card">
+        <div class="result-card-title">Multi-Robot Scalability — KITTI ATE RMSE [m]</div>
+        <div class="result-card-sub">Front-end: MASt3R-SLAM (tuned). DIV = divergence, TL = tracking lost.</div>
+        <div class="frontend-table-wrap">
+          <table class="frontend-table">
+            <thead>
+              <tr>
+                <th>Sequence</th><th>Length</th>
+                <th>1 robot</th><th>1 (tuned)</th>
+                <th>5 robots</th><th>10 robots</th><th>15 robots</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>KITTI 00</td><td>3.7 km</td>
+                <td class="bad">TL</td><td class="bad">103.07</td>
+                <td>49.13</td><td>22.51</td><td class="ate-best">12.26</td>
+              </tr>
+              <tr>
+                <td>KITTI 02</td><td>5.1 km</td>
+                <td class="bad">TL</td><td class="bad">158.49</td>
+                <td class="bad">DIV</td><td class="ate-best">60.17</td><td>62.37</td>
+              </tr>
+              <tr>
+                <td>KITTI 05</td><td>2.2 km</td>
+                <td class="bad">TL</td><td class="bad">147.15</td>
+                <td>14.26</td><td>14.38</td><td class="ate-best">10.20</td>
+              </tr>
+              <tr>
+                <td>KITTI 07</td><td>0.7 km</td>
+                <td class="bad">TL</td><td class="ate-best">2.04</td>
+                <td>4.74</td><td>7.17</td><td>4.75</td>
+              </tr>
+              <tr>
+                <td>KITTI 08</td><td>3.2 km</td>
+                <td class="bad">TL</td><td class="bad">88.16</td>
+                <td class="bad">DIV</td><td>77.33</td><td class="bad">DIV</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scale comparison figure -->
+    <div style="margin-top:2.4rem;" class="fade-in">
+      <div class="gallery-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="gallery-item">
+          <img src="imgs/se3_opt.png" alt="SE(3) opt." style="width:100%; display:block; border-radius:10px 10px 0 0;">
+          <div class="gallery-caption">(a) <strong>SE(3) opt.</strong> — scale absorbed as rotation</div>
+        </div>
+        <div class="gallery-item">
+          <img src="imgs/only_anchor_opt.png" alt="Sim(3) anchor-only" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+          <div class="gallery-caption">(b) <strong>Sim(3) anchor-only</strong> — keyframes fixed</div>
+        </div>
+        <div class="gallery-item" style="border-color:rgba(245,158,11,0.4);">
+          <img src="imgs/sim3_opt.png" alt="MR.ScaleMaster" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+          <div class="gallery-caption">(c) <strong style="color:var(--accent);">MR.ScaleMaster (full Sim(3))</strong></div>
+        </div>
+        <div class="gallery-item">
+          <img src="imgs/traj_00_gt.png" alt="Ground Truth" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+          <div class="gallery-caption">(d) <strong>Ground truth</strong></div>
+        </div>
+      </div>
+      <p class="fig-caption" style="color:var(--text-muted); margin-top:0.8rem;">
+        <strong>Fig. 4.</strong> Effect of scale estimation on KITTI 00 with 15 robots. Ours jointly refines anchor nodes and keyframe poses, yielding globally consistent trajectories.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ HETEROGENEOUS FRONTEND ══════════ -->
+<section class="section-light">
+  <div class="container">
+    <h2 class="section-title fade-in">Heterogeneous Front-End Deployment</h2>
+    <p style="text-align:center; color:#64748b; font-size:0.95rem; margin-top:-1rem; margin-bottom:2rem;" class="fade-in">
+      KITTI 00 · 15 robots · The same backend handles all front-ends without modification.
+    </p>
+
+    <div class="frontend-table-wrap fade-in">
+      <table class="frontend-table" style="color:#1a1a2e;">
+        <thead style="background:#f8fafc;">
+          <tr>
+            <th style="color:#475569;">Front-End</th>
+            <th style="color:#475569;">Robots</th>
+            <th style="color:#475569;">ATE RMSE [m]</th>
+            <th style="color:#475569;">Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-mast3r">MASt3R-SLAM</span></td>
+            <td>15</td>
+            <td style="color:var(--accent); font-weight:800;">12.26</td>
+            <td>Homogeneous</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-vggt">VGGT-SLAM 2.0</span></td>
+            <td>15</td>
+            <td>16.54</td>
+            <td>Homogeneous</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-pi3">π³</span></td>
+            <td>15</td>
+            <td>25.62</td>
+            <td>Homogeneous</td>
+          </tr>
+          <tr style="background:#fffbeb;">
+            <td><span class="tag tag-mixed">MASt3R + π³ + VGGT</span></td>
+            <td>5+5+5</td>
+            <td style="font-weight:700;">18.74</td>
+            <td><strong>Heterogeneous</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="gallery-grid" style="margin-top:1.8rem;">
+      <div class="gallery-item">
+        <img src="imgs/mast3r-slam.png" alt="MASt3R-SLAM" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+        <div class="gallery-caption">(a) <strong>MASt3R-SLAM</strong></div>
+      </div>
+      <div class="gallery-item">
+        <img src="imgs/vggt-slam2.0.png" alt="VGGT-SLAM 2.0" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+        <div class="gallery-caption">(b) <strong>VGGT-SLAM 2.0</strong></div>
+      </div>
+      <div class="gallery-item">
+        <img src="imgs/pi3.png" alt="π³" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+        <div class="gallery-caption">(c) <strong>π³</strong></div>
+      </div>
+      <div class="gallery-item" style="border-color:rgba(245,158,11,0.35);">
+        <img src="imgs/hetero.png" alt="Heterogeneous" style="width:100%; display:block; border-radius:10px 10px 0 0;">
+        <div class="gallery-caption">(d) <strong style="color:#92400e;">Heterogeneous deployment</strong></div>
+      </div>
+    </div>
+    <p class="fig-caption" style="margin-top:0.8rem;">
+      <strong>Fig. 7.</strong> Front-end agnostic validation on KITTI 00 with 15 robots. The heterogeneous deployment (18.74 m)
+      outperforms homogeneous π³, indicating that stronger front-ends contribute corrective constraints that benefit weaker ones.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════ REAL WORLD EXPERIMENT ══════════ -->
+<section class="section-light" id="realworld">
+  <div class="container-wide">
+    <h2 class="section-title fade-in">Real-World Experiment</h2>
+    <p class="fade-in" style="text-align:center; color:#64748b; font-size:0.92rem; margin-top:-1.2rem; margin-bottom:2.4rem;">
+      Four heterogeneous agents capture the environment independently.
+      MR.ScaleMaster fuses their monocular streams into a single consistent 3D map.
+    </p>
+
+    <!-- Exp 1 title -->
+    <div class="rw-exp-title fade-in">Exp 1 — Outdoor Multi-Agent</div>
+
+    <!-- Input videos -->
+    <div class="rw-inputs fade-in">
+      <div class="rw-card">
+        <video src="src/videos/realworld_go2x.mp4" autoplay loop muted playsinline></video>
+        <div class="rw-card-label">Go2 (Legged Robot)</div>
+      </div>
+      <div class="rw-card">
+        <video src="src/videos/realworld_human.mp4" autoplay loop muted playsinline></video>
+        <div class="rw-card-label">Human #1</div>
+      </div>
+      <div class="rw-card">
+        <video src="src/videos/realworld_scout.mp4" autoplay loop muted playsinline></video>
+        <div class="rw-card-label">Scout Mini (Wheeled Robot)</div>
+      </div>
+      <div class="rw-card">
+        <video src="src/videos/realworld_human2.mp4" autoplay loop muted playsinline></video>
+        <div class="rw-card-label">Human #2</div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="rw-arrow fade-in">
+      <div class="rw-arrow-line"></div>
+      <div class="rw-arrow-label">
+        <span>MR.ScaleMaster</span>
+        <div class="rw-arrow-chevron">↓</div>
+      </div>
+      <div class="rw-arrow-line"></div>
+    </div>
+
+    <!-- Output video -->
+    <div class="rw-output fade-in">
+      <video src="1.mp4" autoplay loop muted playsinline></video>
+      <div class="rw-output-badge">Collaborative 3D Map</div>
+    </div>
+
+    <hr class="rw-divider">
+
+    <!-- Exp 2 title -->
+    <div class="rw-exp-title fade-in">Exp 2 — Indoor Library (Multi-Floor)</div>
+
+    <!-- Output video -->
+    <div class="rw-output fade-in">
+      <video src="src/videos/realworld_multi_floor.mp4" autoplay loop muted playsinline></video>
+      <div class="rw-output-badge">Collaborative 3D Map</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ VIDEO COMPARISON ══════════ -->
+<!--
+  VIDEO SWAP GUIDE
+  ─────────────────────────────────────────────────────────────
+  파일명 패턴: videos/kitti{SEQ}_{METHOD}.mp4
+    SEQ    : 00 | 02 | 05 | 07 | 08
+    METHOD : mast3r | pi3 | vggt | loger | hetero
+
+  예) KITTI 05, π³ → videos/kitti05_pi3.mp4
+
+  mp4 파일을 videos/ 폴더에 넣고 아래 <video src="..."> 경로를 교체하면 됩니다.
+  현재는 src="" 로 두어 검은 placeholder 로 표시됩니다.
+  ─────────────────────────────────────────────────────────────
+-->
+<section class="section-dark" id="videos">
+  <div class="container-wide">
+    <h2 class="section-title light fade-in">Video Comparison</h2>
+    <p class="fade-in" style="text-align:center; color:var(--text-muted); font-size:0.92rem; margin-top:-1.2rem; margin-bottom:2rem;">
+      KITTI benchmark — select a sequence to compare all front-ends side by side.
+    </p>
+
+    <!-- ── Sequence Tabs ── -->
+    <div class="seq-tabs fade-in">
+      <button class="seq-tab active" onclick="switchSeq('00', this)">KITTI 00</button>
+      <button class="seq-tab"        onclick="switchSeq('02', this)">KITTI 02</button>
+      <button class="seq-tab"        onclick="switchSeq('05', this)">KITTI 05</button>
+      <button class="seq-tab"        onclick="switchSeq('07', this)">KITTI 07</button>
+      <button class="seq-tab"        onclick="switchSeq('08', this)">KITTI 08</button>
+    </div>
+
+    <!-- ── KITTI 00 ── -->
+    <div class="video-panel active" id="panel-00">
+      <div class="video-panel-grid">
+        <div class="video-card">
+          <video src="src/videos/kitti_00_mast3r.mp4" autoplay loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mast3r">MASt3R-SLAM</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_00_pi3.mp4" autoplay loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-pi3">π³</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_00_vggt.mp4" autoplay loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-vggt">VGGT-SLAM 2.0</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_00_loger.mp4" autoplay loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-loger">LoGeR</span></div>
+        </div>
+        <div class="video-card" style="border-color:rgba(245,158,11,0.3);">
+          <video src="src/videos/kitti_00_hetero.mp4" autoplay loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mixed">Heterogeneous</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KITTI 02 ── -->
+    <div class="video-panel" id="panel-02">
+      <div class="video-panel-grid">
+        <div class="video-card">
+          <video src="src/videos/kitti_02_mast3r.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mast3r">MASt3R-SLAM</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_02_pi3.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-pi3">π³</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_02_vggt.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-vggt">VGGT-SLAM 2.0</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_02_loger.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-loger">LoGeR</span></div>
+        </div>
+        <div class="video-card" style="border-color:rgba(245,158,11,0.3);">
+          <video src="src/videos/kitti_02_hetero.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mixed">Heterogeneous</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KITTI 05 ── -->
+    <div class="video-panel" id="panel-05">
+      <div class="video-panel-grid">
+        <div class="video-card">
+          <video src="src/videos/kitti_05_mast3r.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mast3r">MASt3R-SLAM</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_05_pi3.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-pi3">π³</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_05_vggt.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-vggt">VGGT-SLAM 2.0</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_05_loger.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-loger">LoGeR</span></div>
+        </div>
+        <div class="video-card" style="border-color:rgba(245,158,11,0.3);">
+          <video src="src/videos/kitti_05_hetero.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mixed">Heterogeneous</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KITTI 07 ── -->
+    <div class="video-panel" id="panel-07">
+      <div class="video-panel-grid">
+        <div class="video-card">
+          <video src="src/videos/kitti_07_mast3r.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mast3r">MASt3R-SLAM</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_07_pi3.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-pi3">π³</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_07_vggt.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-vggt">VGGT-SLAM 2.0</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_07_loger.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-loger">LoGeR</span></div>
+        </div>
+        <div class="video-card" style="border-color:rgba(245,158,11,0.3);">
+          <video src="src/videos/kitti_07_hetero.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mixed">Heterogeneous</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KITTI 08 ── -->
+    <div class="video-panel" id="panel-08">
+      <div class="video-panel-grid">
+        <div class="video-card">
+          <video src="src/videos/kitti_08_mast3r.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mast3r">MASt3R-SLAM</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_08_pi3.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-pi3">π³</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_08_vggt.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-vggt">VGGT-SLAM 2.0</span></div>
+        </div>
+        <div class="video-card">
+          <video src="src/videos/kitti_08_loger.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-loger">LoGeR</span></div>
+        </div>
+        <div class="video-card" style="border-color:rgba(245,158,11,0.3);">
+          <video src="src/videos/kitti_08_hetero.mp4" loop muted playsinline></video>
+          <div class="video-card-label"><span class="tag tag-mixed">Heterogeneous</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ TRAJECTORY SLIDER ══════════ -->
+<!--
+  SLIDER IMAGE SWAP GUIDE
+  ─────────────────────────────────────────────────────────────
+  왼쪽(추정): imgs/traj_{SEQ}_est.png
+  오른쪽(GT):  imgs/traj_{SEQ}_gt.png
+
+  예) KITTI 05 → imgs/traj_05_est.png / imgs/traj_05_gt.png
+  ─────────────────────────────────────────────────────────────
+-->
+<section class="section-light" id="trajectory">
+  <div class="container">
+    <h2 class="section-title fade-in">Trajectory Comparison</h2>
+    <p class="fade-in" style="text-align:center; color:#64748b; font-size:0.92rem; margin-top:-1.2rem; margin-bottom:2rem;">
+      Drag the handle to compare estimated trajectory (left) vs. ground truth (right).
+    </p>
+
+    <!-- Sequence tabs -->
+    <div class="traj-tabs fade-in">
+      <button class="traj-tab active" onclick="switchTraj('00', this)">KITTI 00</button>
+      <button class="traj-tab"        onclick="switchTraj('02', this)">KITTI 02</button>
+      <button class="traj-tab"        onclick="switchTraj('05', this)">KITTI 05</button>
+      <button class="traj-tab"        onclick="switchTraj('07', this)">KITTI 07</button>
+      <button class="traj-tab"        onclick="switchTraj('08', this)">KITTI 08</button>
+    </div>
+
+    <!-- KITTI 00 -->
+    <div class="traj-panel active" id="traj-00">
+      <div class="cs-wrap">
+        <div class="cs-side cs-left">
+          <img src="imgs/traj_00_est.png" alt="KITTI 00 Estimated">
+        </div>
+        <div class="cs-side cs-right">
+          <img src="imgs/traj_00_gt.png" alt="KITTI 00 Ground Truth">
+        </div>
+        <div class="cs-divider"><div class="cs-handle">⇔</div></div>
+        <span class="cs-label cs-label-left">Estimated</span>
+        <span class="cs-label cs-label-right">Ground Truth</span>
+      </div>
+    </div>
+
+    <!-- KITTI 02 -->
+    <div class="traj-panel" id="traj-02">
+      <div class="cs-wrap">
+        <div class="cs-side cs-left">
+          <img src="imgs/traj_02_est.png" alt="KITTI 02 Estimated">
+        </div>
+        <div class="cs-side cs-right">
+          <img src="imgs/traj_02_gt.png" alt="KITTI 02 Ground Truth">
+        </div>
+        <div class="cs-divider"><div class="cs-handle">⇔</div></div>
+        <span class="cs-label cs-label-left">Estimated</span>
+        <span class="cs-label cs-label-right">Ground Truth</span>
+      </div>
+    </div>
+
+    <!-- KITTI 05 -->
+    <div class="traj-panel" id="traj-05">
+      <div class="cs-wrap">
+        <div class="cs-side cs-left">
+          <img src="imgs/traj_05_est.png" alt="KITTI 05 Estimated">
+        </div>
+        <div class="cs-side cs-right">
+          <img src="imgs/traj_05_gt.png" alt="KITTI 05 Ground Truth">
+        </div>
+        <div class="cs-divider"><div class="cs-handle">⇔</div></div>
+        <span class="cs-label cs-label-left">Estimated</span>
+        <span class="cs-label cs-label-right">Ground Truth</span>
+      </div>
+    </div>
+
+    <!-- KITTI 07 -->
+    <div class="traj-panel" id="traj-07">
+      <div class="cs-wrap">
+        <div class="cs-side cs-left">
+          <img src="imgs/traj_07_est.png" alt="KITTI 07 Estimated">
+        </div>
+        <div class="cs-side cs-right">
+          <img src="imgs/traj_07_gt.png" alt="KITTI 07 Ground Truth">
+        </div>
+        <div class="cs-divider"><div class="cs-handle">⇔</div></div>
+        <span class="cs-label cs-label-left">Estimated</span>
+        <span class="cs-label cs-label-right">Ground Truth</span>
+      </div>
+    </div>
+
+    <!-- KITTI 08 -->
+    <div class="traj-panel" id="traj-08">
+      <div class="cs-wrap">
+        <div class="cs-side cs-left">
+          <img src="imgs/traj_08_est.png" alt="KITTI 08 Estimated">
+        </div>
+        <div class="cs-side cs-right">
+          <img src="imgs/traj_08_gt.png" alt="KITTI 08 Ground Truth">
+        </div>
+        <div class="cs-divider"><div class="cs-handle">⇔</div></div>
+        <span class="cs-label cs-label-left">Estimated</span>
+        <span class="cs-label cs-label-right">Ground Truth</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════ BIBTEX ══════════ -->
+<section class="section-dark" id="bibtex">
+  <div class="container">
+    <h2 class="section-title light fade-in">BibTeX</h2>
+    <div class="bibtex-wrap fade-in">
+      <pre class="bibtex-block" id="bibtexContent">@inproceedings{anonymous2026mrscalemaster,
+  title     = {{MR.ScaleMaster}: Scale-Consistent Collaborative Mapping
+               from Crowd-Sourced Monocular Videos},
+  author    = {Anonymous Authors},
+  booktitle = {Proceedings of the IEEE/RSJ International Conference
+               on Intelligent Robots and Systems (IROS)},
   year      = {2026}
 }</pre>
+      <button class="copy-btn" id="copyBtn" onclick="copyBibtex()">Copy</button>
+    </div>
   </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="footer">
+  <p>MR.ScaleMaster · IROS 2026 &nbsp;|&nbsp;
+    <a href="https://mr-scalemaster.github.io/MR.ScaleMaster/" target="_blank">Project Page</a>
+  </p>
+</footer>
+
+<!-- ══════════ SCRIPTS ══════════ -->
+<script>
+/* ─── NAV scroll effect ─── */
+const nav = document.getElementById('topNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+/* ─── Fade-in on scroll ─── */
+const fadeEls = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+
+/* ─── Copy BibTeX ─── */
+function copyBibtex() {
+  const text = document.getElementById('bibtexContent').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+/* ─── Video sync: wait for ALL videos to finish, then restart together ─── */
+function syncPanel(panel) {
+  const videos = [...panel.querySelectorAll('video')];
+  if (!videos.length) return;
+
+  videos.forEach(v => v.removeAttribute('loop'));
+
+  let endedCount = 0;
+
+  videos.forEach(v => v.addEventListener('ended', () => {
+    endedCount++;
+    if (endedCount >= videos.length) {
+      endedCount = 0;
+      videos.forEach(v2 => { v2.currentTime = 0; v2.play().catch(() => {}); });
+    }
+  }));
+}
+
+/* ─── Video Comparison: tab switching ─── */
+function switchSeq(seq, btn) {
+  document.querySelectorAll('.seq-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.video-panel').forEach(p => {
+    p.classList.remove('active');
+    p.querySelectorAll('video').forEach(v => { v.pause(); v.currentTime = 0; });
+  });
+  btn.classList.add('active');
+  const panel = document.getElementById('panel-' + seq);
+  panel.classList.add('active');
+  panel.querySelectorAll('video').forEach(v => v.play().catch(() => {}));
+}
+
+// init sync for all panels on load
+document.querySelectorAll('.video-panel').forEach(syncPanel);
+
+/* ─── Trajectory slider tab switching ─── */
+function switchTraj(seq, btn) {
+  document.querySelectorAll('.traj-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.traj-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('traj-' + seq).classList.add('active');
+}
+
+/* ─── Comparison slider drag logic ─── */
+(function () {
+  function initSlider(wrap) {
+    const right    = wrap.querySelector('.cs-right');
+    const divider  = wrap.querySelector('.cs-divider');
+    let dragging = false;
+
+    function setPos(x) {
+      const rect = wrap.getBoundingClientRect();
+      let pct = ((x - rect.left) / rect.width) * 100;
+      pct = Math.max(2, Math.min(98, pct));
+      right.style.clipPath   = `inset(0 0 0 ${pct}%)`;
+      divider.style.left     = pct + '%';
+    }
+
+    wrap.addEventListener('mousedown',  e => { dragging = true; setPos(e.clientX); });
+    wrap.addEventListener('touchstart', e => { dragging = true; setPos(e.touches[0].clientX); }, { passive: true });
+    window.addEventListener('mousemove',  e => { if (dragging) setPos(e.clientX); });
+    window.addEventListener('touchmove',  e => { if (dragging) setPos(e.touches[0].clientX); }, { passive: true });
+    window.addEventListener('mouseup',  () => dragging = false);
+    window.addEventListener('touchend', () => dragging = false);
+  }
+
+  // init all sliders (including ones revealed later by tab switch)
+  document.querySelectorAll('.cs-wrap').forEach(initSlider);
+})();
+
+/* ─── Video fallback: if video fails to load, darken bg ─── */
+(function() {
+  const vid = document.getElementById('heroBg');
+  if (!vid) return;
+  vid.addEventListener('error', () => {
+    vid.style.display = 'none';
+  });
+
+})();
+</script>
+
 </body>
 </html>
