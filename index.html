@@ -1498,15 +1498,29 @@ function syncPanel(panel) {
 
   videos.forEach(v => v.removeAttribute('loop'));
 
-  let endedCount = 0;
+  // find the longest video, restart all when it ends
+  function bindLongest() {
+    const durations = videos.map(v => v.duration || 0);
+    const maxDur = Math.max(...durations);
+    const longest = videos.find(v => v.duration === maxDur) || videos[videos.length - 1];
 
-  videos.forEach(v => v.addEventListener('ended', () => {
-    endedCount++;
-    if (endedCount >= videos.length) {
-      endedCount = 0;
-      videos.forEach(v2 => { v2.currentTime = 0; v2.play().catch(() => {}); });
+    longest.addEventListener('ended', function onEnd() {
+      videos.forEach(v => { v.currentTime = 0; v.play().catch(() => {}); });
+      longest.addEventListener('ended', onEnd, { once: true });
+    }, { once: true });
+  }
+
+  // wait until all metadata loaded to know durations
+  let loaded = 0;
+  videos.forEach(v => {
+    if (v.readyState >= 1) {
+      if (++loaded === videos.length) bindLongest();
+    } else {
+      v.addEventListener('loadedmetadata', () => {
+        if (++loaded === videos.length) bindLongest();
+      });
     }
-  }));
+  });
 }
 
 /* ─── Video Comparison: tab switching ─── */
