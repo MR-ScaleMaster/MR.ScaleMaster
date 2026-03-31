@@ -869,39 +869,39 @@
       </div>
     </div>
 
-    <!-- Scale Collapse Alarm visualization -->
-    <div class="fade-in" style="margin-top:2.8rem;">
-      <p style="text-align:center; font-size:0.82rem; font-weight:700; color:#64748b; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:1rem;">
+    <!-- Scale Collapse Alarm — both cases in one card -->
+    <div class="fade-in" style="margin-top:2.8rem; border:1px solid rgba(255,255,255,0.12); border-radius:20px; padding:2rem; background:rgba(255,255,255,0.03);">
+
+      <h3 style="text-align:center; font-size:1rem; font-weight:800; color:#0f172a; letter-spacing:0.06em; text-transform:uppercase; margin:0 0 2rem;">
         Scale Collapse Alarm — Before &amp; After
+      </h3>
+
+      <!-- Case 1: Outdoor -->
+      <p style="text-align:center; font-size:0.78rem; font-weight:700; color:#64748b; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:0.8rem;">
+        Exp 1 — Corridor
       </p>
       <video src="src/videos/scale_collapse_alarm.mp4"
         autoplay loop muted playsinline
-        style="width:100%; display:block; border-radius:14px; border:1px solid rgba(255,255,255,0.08);"
+        style="width:100%; display:block; border-radius:10px; border:1px solid rgba(255,255,255,0.08);"
         onloadedmetadata="this.playbackRate=4;">
       </video>
-      <div style="position:relative; height:2rem; margin-top:0.6rem;">
-        <span style="position:absolute; left:25%; transform:translateX(-50%); font-size:1.1rem; font-weight:800; color:#f87171; letter-spacing:0.06em;">Before</span>
-        <span style="position:absolute; left:75%; transform:translateX(-50%); font-size:1.1rem; font-weight:800; color:#4ade80; letter-spacing:0.06em;">After</span>
+      <div style="position:relative; height:2rem; margin-top:0.5rem; margin-bottom:2rem;">
+        <span style="position:absolute; left:25%; transform:translateX(-50%); font-size:1rem; font-weight:800; color:#f87171;">Before</span>
+        <span style="position:absolute; left:75%; transform:translateX(-50%); font-size:1rem; font-weight:800; color:#4ade80;">After</span>
       </div>
-    </div>
 
-    <!-- Scale Collapse Alarm — Macau corridor -->
-    <div class="fade-in" style="margin-top:2.8rem;">
-      <p style="text-align:center; font-size:0.82rem; font-weight:700; color:#64748b; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:0.5rem;">
-        Scale Collapse Alarm — Repetitive Corridor
-      </p>
-      <p style="text-align:center; font-size:0.88rem; color:#94a3b8; margin-bottom:1rem;">
-        A visually repetitive indoor corridor induces false-positive loop closures.
-        The Scale Collapse Alarm detects and rejects them before pose graph corruption.
+      <!-- Case 2: Indoor corridor -->
+      <p style="text-align:center; font-size:0.78rem; font-weight:700; color:#64748b; letter-spacing:0.07em; text-transform:uppercase; margin-bottom:0.8rem;">
+        Exp 2 — Perceptually Aliased Corridor
       </p>
       <video src="src/videos/scale_collapse_macau.mp4"
         autoplay loop muted playsinline
-        style="width:100%; display:block; border-radius:14px; border:1px solid rgba(255,255,255,0.08);"
+        style="width:100%; display:block; border-radius:10px; border:1px solid rgba(255,255,255,0.08);"
         onloadedmetadata="this.playbackRate=1;">
       </video>
-      <div style="position:relative; height:2rem; margin-top:0.6rem;">
-        <span style="position:absolute; left:25%; transform:translateX(-50%); font-size:1.1rem; font-weight:800; color:#f87171; letter-spacing:0.06em;">Before</span>
-        <span style="position:absolute; left:75%; transform:translateX(-50%); font-size:1.1rem; font-weight:800; color:#4ade80; letter-spacing:0.06em;">After</span>
+      <div style="position:relative; height:2rem; margin-top:0.5rem;">
+        <span style="position:absolute; left:25%; transform:translateX(-50%); font-size:1rem; font-weight:800; color:#f87171;">Before</span>
+        <span style="position:absolute; left:75%; transform:translateX(-50%); font-size:1rem; font-weight:800; color:#4ade80;">After</span>
       </div>
     </div>
 
@@ -929,23 +929,23 @@
       <div class="gallery-grid" style="grid-template-columns:repeat(2,1fr); gap:1.2rem;">
         <div class="gallery-item">
           <img src="imgs/se3_opt.png" alt="SE(3) opt." style="width:100%; display:block; border-radius:10px 10px 0 0;">
-          <div class="gallery-caption">(a) <strong>SE(3) opt.</strong> — scale absorbed as rotation</div>
+          <div class="gallery-caption" style="color:#e2e8f0;">(a) <strong style="color:#fff;">SE(3) opt.</strong> — scale absorbed as rotation</div>
         </div>
         <div class="gallery-item">
           <img src="imgs/only_anchor_opt.png" alt="Sim(3) anchor-only" style="width:100%; display:block; border-radius:10px 10px 0 0;">
-          <div class="gallery-caption">(b) <strong>Sim(3) anchor-only</strong> — keyframes fixed</div>
+          <div class="gallery-caption" style="color:#e2e8f0;">(b) <strong style="color:#fff;">Sim(3) anchor-only</strong> — keyframes fixed</div>
         </div>
         <div class="gallery-item" style="border-color:rgba(245,158,11,0.4);">
           <img src="imgs/sim3_opt.png" alt="MR.ScaleMaster" style="width:100%; display:block; border-radius:10px 10px 0 0;">
-          <div class="gallery-caption">(c) <strong style="color:var(--accent);">MR.ScaleMaster (full Sim(3))</strong></div>
+          <div class="gallery-caption" style="color:#e2e8f0;">(c) <strong style="color:var(--accent);">MR.ScaleMaster (full Sim(3))</strong></div>
         </div>
         <div class="gallery-item">
           <img src="imgs/traj_00_gt.png" alt="Ground Truth" style="width:100%; display:block; border-radius:10px 10px 0 0;">
-          <div class="gallery-caption">(d) <strong>Ground truth</strong></div>
+          <div class="gallery-caption" style="color:#e2e8f0;">(d) <strong style="color:#fff;">Ground truth</strong></div>
         </div>
       </div>
-      <p class="fig-caption" style="color:var(--text-muted); margin-top:0.8rem;">
-        <strong>Fig. 4.</strong> Effect of scale estimation on KITTI 00 with 15 robots. Ours jointly refines anchor nodes and keyframe poses, yielding globally consistent trajectories.
+      <p class="fig-caption" style="color:#94a3b8; margin-top:0.8rem;">
+        <strong style="color:#e2e8f0;">Fig. 4.</strong> Effect of scale estimation on KITTI 00 with 15 robots. Ours jointly refines anchor nodes and keyframe poses, yielding globally consistent trajectories.
       </p>
     </div>
 
@@ -1267,7 +1267,7 @@
     <!-- Input videos -->
     <div class="rw-inputs fade-in">
       <div class="rw-card">
-        <video src="src/videos/realworld_go2x.mp4" autoplay loop muted playsinline></video>
+        <video src="src/videos/realworld_go2x.mp4" autoplay loop muted playsinline onloadedmetadata="this.playbackRate=0.8;"></video>
         <div class="rw-card-label" style="border-top:3px solid var(--green);">Go2 (Legged Robot)</div>
       </div>
       <div class="rw-card">
@@ -1275,7 +1275,7 @@
         <div class="rw-card-label" style="border-top:3px solid var(--blue);">Human #1</div>
       </div>
       <div class="rw-card">
-        <video src="src/videos/realworld_scout.mp4" autoplay loop muted playsinline></video>
+        <video src="src/videos/realworld_scout.mp4" autoplay loop muted playsinline onloadedmetadata="this.playbackRate=1.2;"></video>
         <div class="rw-card-label" style="border-top:3px solid var(--yellow);">Scout Mini (Wheeled Robot)</div>
       </div>
       <div class="rw-card">
@@ -1404,8 +1404,41 @@ function switchSeq(seq, btn) {
   panel.querySelectorAll('video').forEach(v => v.play().catch(() => {}));
 }
 
-// init sync for all panels on load
+// init sync for all KITTI panels
 document.querySelectorAll('.video-panel').forEach(syncPanel);
+
+// init sync for Real World Exp 1 (inputs + output hero_video together)
+(function () {
+  const rwSection = document.getElementById('realworld');
+  if (!rwSection) return;
+  const inputs = [...rwSection.querySelectorAll('.rw-card video')];
+  const output = rwSection.querySelector('.rw-output video');
+  if (!output) return;
+  const allVideos = [...inputs, output];
+  // remove loop so we can control restart manually
+  allVideos.forEach(v => v.removeAttribute('loop'));
+
+  function bindLongest() {
+    const maxDur = Math.max(...allVideos.map(v => v.duration || 0));
+    const longest = allVideos.find(v => v.duration === maxDur) || output;
+
+    longest.addEventListener('ended', function onEnd() {
+      allVideos.forEach(v => { v.currentTime = 0; v.play().catch(() => {}); });
+      longest.addEventListener('ended', onEnd, { once: true });
+    }, { once: true });
+  }
+
+  let loaded = 0;
+  allVideos.forEach(v => {
+    if (v.readyState >= 1) {
+      if (++loaded === allVideos.length) bindLongest();
+    } else {
+      v.addEventListener('loadedmetadata', () => {
+        if (++loaded === allVideos.length) bindLongest();
+      });
+    }
+  });
+})();
 
 /* ─── Trajectory slider tab switching ─── */
 function switchTraj(seq, btn) {
